@@ -1,19 +1,26 @@
 # Using
 
-**TODO: Add description**
+I would like to import functions from one module into another module.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `using` to your list of dependencies in `mix.exs`:
+Given this code:
 
 ```elixir
-def deps do
-  [{:using, "~> 0.1.0"}]
+defmodule Using do
+  use Using.Importer
+end
+
+defmodule Using.Importer do
+  defmacro __using__(_) do
+    quote do
+      import Using.Helpers
+    end
+  end
+end
+
+defmodule Using.Helpers do
+  def hello, do: "world"
+  def greeting(name), do: "hello #{name}"
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/using](https://hexdocs.pm/using).
-
+I would expect to be able to call `Using.hello/0` and `Using.greeting/1` directly. But they are not in scope.
